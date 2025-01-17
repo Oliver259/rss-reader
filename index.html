@@ -2,27 +2,41 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-    <link rel="stylesheet" type="text/css" href="./styles.css">
+    <title>RSS Reader</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
+    <link rel="stylesheet" type="text/css" href="./output.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
 </head>
-<body>
-    <h1>Hello World!</h1>
-    <p>
-        We are using Node.js <span id="node-version"></span>,
-        Chromium <span id="chrome-version"></span>,
-        and Electron <span id="electron-version"></span>.
-    </p>
-    <p>Current theme source: <strong id="theme-source">System</strong></p>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+    <div class="container mx-auto p-6">
+        <h1 class="text-4xl font-bold mb-6 text-center">RSS Reader</h1>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+            <p class="mb-4 text-center">
+                We are using Node.js <span id="node-version" class="font-mono"></span>,
+                Chromium <span id="chrome-version" class="font-mono"></span>,
+                and Electron <span id="electron-version" class="font-mono"></span>.
+            </p>
+            <p class="mb-4 text-center">Current theme source: <strong id="theme-source">System</strong></p>
 
-    <button id="toggle-dark-mode">Toggle Dark Mode</button>
-    <button id="reset-to-system">Reset to System Theme</button>
+            <div class="flex justify-center mb-6">
+                <button id="toggle-dark-mode" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2">Toggle Dark Mode</button>
+                <button id="reset-to-system" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700">Reset to System Theme</button>
+            </div>
 
-    <div>
-        <input type="text" id="rss-url" placeholder="Enter RSS feed URL">
-        <button id="fetch-rss">Fetch RSS</button>
+            <div class="mb-6">
+                <input type="text" id="rss-url" placeholder="Enter RSS feed URL" class="px-4 py-2 border rounded w-full mb-2">
+                <button id="fetch-rss" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 w-full">Fetch RSS</button>
+            </div>
+
+            <div id="rss-feed" class="space-y-4"></div>
+        </div>
     </div>
-    <div id="rss-feed"></div>
 
     <script src="renderer.js"></script>
 </body>

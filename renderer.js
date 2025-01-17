@@ -23,7 +23,7 @@ async function fetchAndDisplayRSS(url) {
       itemElement.className = "rss-item";
       itemElement.innerHTML = `
         <h3>${item.title}</h3>
-        <h4>${item.author} ${item.pubDate}</h4>
+        <h4>${item.author || item.creator}<br>${item.pubDate}</h4>
         <p>${item.content || item['content:encoded']}</p>
         <a href="${item.link}" target="_blank">Read more</a>
       `;
