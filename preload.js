@@ -4,8 +4,6 @@ contextBridge.exposeInMainWorld("versions", {
   node: () => process.versions.node,
   chrome: () => process.versions.chrome,
   electron: () => process.versions.electron,
-//   ping: () => ipcRenderer.invoke('ping')
-  // we can also expose variables, not just functions
 });
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -22,4 +20,8 @@ window.addEventListener('DOMContentLoaded', () => {
 contextBridge.exposeInMainWorld("darkMode", {
   toggle: () => ipcRenderer.invoke("dark-mode:toggle"),
   system: () => ipcRenderer.invoke("dark-mode:system"),
+});
+
+contextBridge.exposeInMainWorld("rssParser", {
+  fetchRSS: (url) => ipcRenderer.invoke('fetch-rss', url)
 });

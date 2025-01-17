@@ -1,5 +1,7 @@
 const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron')
 const path = require('node:path')
+const Parser = require("rss-parser");
+const parser = new Parser();
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -23,6 +25,16 @@ const createWindow = () => {
 
   ipcMain.handle('dark-mode:system', () => {
     nativeTheme.themeSource = 'system'
+  })
+
+  ipcMain.handle('fetch-rss', async (event, url) => {
+    try {
+      const feed = await parser.parseURL(url);
+      return feed;
+    } catch (error) {
+      console.error('Error fetching RSS:', error);
+      throw error;
+    }
   })
 }
 
