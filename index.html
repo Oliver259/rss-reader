@@ -6,7 +6,6 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
     <link rel="stylesheet" type="text/css" href="./output.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -31,11 +30,21 @@
 
             <div class="mb-6">
                 <input type="text" id="rss-url" placeholder="Enter RSS feed URL" class="px-4 py-2 border rounded w-full mb-2">
+                <button id="add-feed" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 w-full mb-2">Add Feed</button>
                 <button id="fetch-rss" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 w-full">Fetch RSS</button>
+            </div>
+
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold mb-4">Saved Feeds</h2>
+                <ul id="feed-list" class="list-disc pl-5 space-y-2"></ul>
             </div>
 
             <div id="rss-feed" class="space-y-4"></div>
         </div>
+        <h3>Persist Data and User Settings in Electron</h3>
+        <h5>Enter Sample Text here</h5>
+        <input type="text" id="sample">
+        <button id="submit">Submitting the Data</button>
     </div>
 
     <script src="renderer.js"></script>

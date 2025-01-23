@@ -12,6 +12,7 @@
   "devDependencies": {
     "@catppuccin/tailwindcss": "^0.1.6",
     "electron": "^34.0.0",
+    "electron-settings": "^4.0.4",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.10",
     "rss-parser": "^3.13.0",
