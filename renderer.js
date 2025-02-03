@@ -61,30 +61,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Function to render the list of saved feeds
   async function renderFeedList() {
-    const feeds = await window.feedStore.getFeeds();
-    const feedList = document.getElementById("feed-list");
-    feedList.innerHTML = "";
-    feeds.forEach((feed, index) => {
-      const feedItem = document.createElement("li");
-      feedItem.style.display = "flex";
-      feedItem.style.justifyContent = "space-between";
-      feedItem.style.alignItems = "center";
-      feedItem.innerHTML = `
-        <span data-url="${feed.url}">${feed.title}</span>
-        <button class="remove-feed" style="padding: 5px 10px; background-color: #f56565; color: white; border-radius: 5px; cursor: pointer;" data-url="${feed.url}">Remove</button>
-      `;
-      feedList.appendChild(feedItem);
-    });
+  const feeds = await window.feedStore.getFeeds();
+  const feedList = document.getElementById("feed-list");
+  feedList.innerHTML = "";
+  feeds.forEach((feed) => {
+    const feedItem = document.createElement("div");
+    feedItem.className =
+      "rss-item saved-feed-card-bg dark:bg-gray-800 p-4 rounded-lg shadow-md mb-4 flex flex-col justify-center items-center";
+    feedItem.innerHTML = `
+      <h3 class="text-xl font-bold mb-2" text-center>${feed.title}</h3>
+      <div class="flex justify-between mb-4">
+        <button class="view-button mr-2 px-4 py-2 saved-feed-card-view-button saved-feed-card-button-text rounded hover:bg-blue-700" data-url="${feed.url}">View</button>
+        <button class="remove-button px-4 py-2 saved-feed-card-remove-button saved-feed-card-button-text rounded hover:bg-red-700" data-url="${feed.url}">Remove</button>
+      </div>
+    `;
+    feedList.appendChild(feedItem);
+  });
 
-    // Add event listeners to remove buttons
-    document.querySelectorAll(".remove-feed").forEach((button) => {
-      button.addEventListener("click", async (event) => {
-        const url = event.target.getAttribute("data-url");
-        await window.feedStore.removeFeed(url);
-        renderFeedList();
-      });
+  document.querySelectorAll(".view-button").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const url = event.target.getAttribute("data-url");
+      fetchAndDisplayRSS(url);
     });
-  }
+  });
+
+  document.querySelectorAll(".remove-button").forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      const url = event.target.getAttribute("data-url");
+      await window.feedStore.removeFeed(url);
+      renderFeedList();
+    });
+  });
+}
 
   // Event listener for adding a new feed
   document.getElementById("add-feed").addEventListener("click", async () => {

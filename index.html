@@ -35,13 +35,18 @@
                 <button id="fetch-rss" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 w-full">Fetch RSS</button>
             </div>
 
-            <div class="mb-6">
+            <div class="mb-2">
                 <h2 class="text-2xl font-bold mb-4">Saved Feeds</h2>
-                <ul id="feed-list" class="list-disc pl-5 space-y-2"></ul>
+                <div id="feed-list" class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto"></div>
             </div>
+
+        </div>
+        <br>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
 
             <div id="rss-feed" class="space-y-4"></div>
         </div>
+        <br>
         <h3>Persist Data and User Settings in Electron</h3>
         <h5>Enter Sample Text here</h5>
         <input type="text" id="sample">
