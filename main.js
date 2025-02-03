@@ -43,13 +43,12 @@ const createWindow = () => {
     return Array.isArray(feeds) ? feeds : [];
   });
 
-  ipcMain.handle("add-feed", async (event, url) => {
+  ipcMain.handle("add-feed", async (event, url, title) => {
     let feeds = await settings.get("feeds", []);
     feeds = Array.isArray(feeds) ? feeds : [];
-    const feed = await parser.parseURL(url);
-    const feedData = {url, title: feed.title}
-    if (!feeds.includes(url)) {
-      feeds.push(url);
+    const feedData = {url, title}
+    if (!feeds.some(feed => feed.url === url)) {
+      feeds.push(feedData);
       await settings.set("feeds", feeds);
     }
     return feeds;
@@ -58,7 +57,7 @@ const createWindow = () => {
   ipcMain.handle("remove-feed", async (event, url) => {
     let feeds = await settings.get("feeds", []);
     feeds = Array.isArray(feeds) ? feeds : [];
-    feeds = feeds.filter((feed) => feed !== url);
+    feeds = feeds.filter((feed) => feed.url !== url);
     await settings.set("feeds", feeds);
     return feeds;
   });
@@ -70,6 +69,9 @@ const createWindow = () => {
   ipcMain.handle("set-sample-data", async (event, data) => {
     await settings.set("key", { data });
   });
+
+  console.log("Settings file path:", settings.file());
+
 };
 
 app.whenReady().then(() => {

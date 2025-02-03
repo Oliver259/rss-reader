@@ -17,7 +17,7 @@ contextBridge.exposeInMainWorld("rssParser", {
 
 contextBridge.exposeInMainWorld("feedStore", {
   getFeeds: () => ipcRenderer.invoke("get-feeds"),
-  addFeed: (url) => ipcRenderer.invoke("add-feed", url),
+  addFeed: (url, title) => ipcRenderer.invoke("add-feed", url, title),
   removeFeed: (url) => ipcRenderer.invoke("remove-feed", url),
 });
 

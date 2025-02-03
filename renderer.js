@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const rssURLInput = document.getElementById("rss-url");
+  const rssTitleInput = document.getElementById("rss-title");
+  const addFeedButton = document.getElementById("add-feed");
+
+  function updateAddFeedButtonState() {
+    addFeedButton.disabled = !rssURLInput.value || !rssTitleInput.value;
+  }
+
+  rssURLInput.addEventListener("input", updateAddFeedButtonState);
+  rssTitleInput.addEventListener("input", updateAddFeedButtonState);
+  
   document
     .getElementById("toggle-dark-mode")
     .addEventListener("click", async () => {
@@ -16,15 +27,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   document.getElementById("fetch-rss").addEventListener("click", async () => {
-    const url = document.getElementById("rss-url").value;
+    const url = rssURLInput.value;
     await fetchAndDisplayRSS(url);
   });
 
   async function fetchAndDisplayRSS(url) {
     try {
       const feed = await window.rssParser.fetchRSS(url);
+      console.log(feed);
       const feedContainer = document.getElementById("rss-feed");
       feedContainer.innerHTML = ""; // Clear previous feed items
+      
+      const feedTitleElement = document.createElement("h2");
+      feedTitleElement.className = "feed-title";
+       feedTitleElement.innerText = feed.title;
+       feedContainer.appendChild(feedTitleElement);
+
       feed.items.forEach((item) => {
         const itemElement = document.createElement("div");
         itemElement.className = "rss-item";
@@ -52,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
       feedItem.style.justifyContent = "space-between";
       feedItem.style.alignItems = "center";
       feedItem.innerHTML = `
-        <span>${feed}</span>
-        <button class="remove-feed" style="padding: 5px 10px; background-color: #f56565; color: white; border-radius: 5px; cursor: pointer;" data-url="${feed}">Remove</button>
+        <span data-url="${feed.url}">${feed.title}</span>
+        <button class="remove-feed" style="padding: 5px 10px; background-color: #f56565; color: white; border-radius: 5px; cursor: pointer;" data-url="${feed.url}">Remove</button>
       `;
       feedList.appendChild(feedItem);
     });
@@ -70,18 +88,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Event listener for adding a new feed
   document.getElementById("add-feed").addEventListener("click", async () => {
-    const url = document.getElementById("rss-url").value;
-    if (url) {
-      await window.feedStore.addFeed(url);
+    const url = rssURLInput.value;
+    const title = rssTitleInput.value;
+    if (url && title) {
+      await window.feedStore.addFeed(url, title);
       renderFeedList();
-      document.getElementById("rss-url").value = "";
+      rssURLInput.value = "";
+      rssTitleInput.value = "";
+      updateAddFeedButtonState
     }
   });
 
   // Event listener for fetching RSS feed from the list
   document.getElementById("feed-list").addEventListener("click", (event) => {
     if (event.target.tagName === "SPAN") {
-      const url = event.target.textContent;
+      const url = event.target.getAttribute("data-url");
       fetchAndDisplayRSS(url);
     }
   });
