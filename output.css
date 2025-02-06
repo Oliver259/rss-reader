@@ -1269,6 +1269,10 @@ video {
   background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1));
 }
 
+.hidden {
+  display: none;
+}
+
 @media (prefers-color-scheme: dark) {
   .dark\:bg-gray-800 {
     --tw-bg-opacity: 1;
@@ -1333,10 +1337,6 @@ video {
 
 .saved-feed-card-remove-button {
   background-color: rgb(var(--latte-ctp-red));
-}
-
-.hidden {
-  display: none;
 }
 
 }

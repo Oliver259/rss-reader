@@ -2,14 +2,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const rssURLInput = document.getElementById("rss-url");
   const rssTitleInput = document.getElementById("rss-title");
   const addFeedButton = document.getElementById("add-feed");
+  const fetchRSSButton = document.getElementById("fetch-rss")
 
   // Disables the add feed button unless both RSS URL and title fields have values
   function toggleAddFeedButtonState() {
     addFeedButton.disabled = !rssURLInput.value || !rssTitleInput.value;
   }
 
+  // Disables the fetch RSS button unless the RSS URL field has a value
+  function toggleFetchRSSButtonState() {
+    fetchRSSButton.disabled = !rssURLInput.value;
+  }
+
   // Event listeners for input fields to enable/disable the add feed button
-  rssURLInput.addEventListener("input", toggleAddFeedButtonState);
+  rssURLInput.addEventListener("input", () => {
+    toggleAddFeedButtonState();
+    toggleFetchRSSButtonState();
+  });
   rssTitleInput.addEventListener("input", toggleAddFeedButtonState);
 
   // Toggle dark mode
@@ -31,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   // Fetches the RSS feed from the entered RSS feed URL
-  document.getElementById("fetch-rss").addEventListener("click", async () => {
+  fetchRSSButton.addEventListener("click", async () => {
     const url = rssURLInput.value;
     await fetchAndDisplayRSS(url);
   });
@@ -79,6 +88,11 @@ document.addEventListener("DOMContentLoaded", () => {
         feedContainer.appendChild(itemElement);
       });
     } catch (error) {
+      if (error.message.includes("EAI_AGAIN") || error.message.includes("ECONNREFUSED")) {
+        alert(
+          "Error: Invalid URL - Try removing and readding RSS feed with a working URL",
+        );
+      }
       console.error("Error fetching RSS feed:", error);
     }
   }
@@ -134,7 +148,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("add-feed").addEventListener("click", async () => {
     const url = rssURLInput.value.trim();
     const title = rssTitleInput.value.trim();
+
     if (url && title) {
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        alert("Error: URL must start with http:// or https://");
+        return;
+      }
       await window.feedStore.addFeed(url, title);
       renderFeedList();
       rssURLInput.value = "";
