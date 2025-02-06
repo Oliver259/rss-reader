@@ -39,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to fetch and display RSS feeds
   async function fetchAndDisplayRSS(url) {
     try {
+      // Trim whitespace characters from the URL
+      url = url.trim();
       const feed = await window.rssParser.fetchRSS(url);
       console.log(feed);
       const feedContainer = document.getElementById("rss-feed");
@@ -130,8 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Adds the entered rss feed and title to saved feeds list
   document.getElementById("add-feed").addEventListener("click", async () => {
-    const url = rssURLInput.value;
-    const title = rssTitleInput.value;
+    const url = rssURLInput.value.trim();
+    const title = rssTitleInput.value.trim();
     if (url && title) {
       await window.feedStore.addFeed(url, title);
       renderFeedList();
