@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
       button.addEventListener("click", (event) => {
         const url = event.target.getAttribute("data-url");
         fetchAndDisplayRSS(url);
+        document.getElementById("rss-display").classList.remove("hidden");
       });
     });
 

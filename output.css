@@ -1334,4 +1334,9 @@ video {
 .saved-feed-card-remove-button {
   background-color: rgb(var(--latte-ctp-red));
 }
+
+.hidden {
+  display: none;
+}
+
 }
