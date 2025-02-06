@@ -4,9 +4,9 @@ const settings = require("electron-settings");
 const Parser = require("rss-parser");
 const parser = new Parser();
 
-require("electron-reload")(__dirname, {
-  electron: path.join(__dirname, "node_modules", ".bin", "electron"),
-});
+// require("electron-reload")(__dirname, {
+//   electron: path.join(__dirname, "node_modules", ".bin", "electron"),
+// });
 
 // Function to create the main application window
 const createWindow = () => {
