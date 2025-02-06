@@ -88,12 +88,15 @@ document.addEventListener("DOMContentLoaded", () => {
         feedContainer.appendChild(itemElement);
       });
     } catch (error) {
-      if (error.message.includes("EAI_AGAIN") || error.message.includes("ECONNREFUSED")) {
+      if (error.message.includes("EAI_AGAIN") || error.message.includes("ECONNREFUSED") || error.message.includes("ENOTFOUND")) {
         alert(
           "Error: Invalid URL - Try removing and readding RSS feed with a working URL",
         );
       }
-      console.error("Error fetching RSS feed:", error);
+      else if (error.message.includes("ERR_INVALID_PROTOCOL")){
+        alert("Error: Invalid URL");
+      }
+      console.error("Error fetching RSS feed:", error.message);
     }
   }
 
