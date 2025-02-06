@@ -117,17 +117,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial render of the feed list
   renderFeedList();
-
-  // Persisting data using electron-settings
-  document.getElementById("submit").addEventListener("click", async () => {
-    const sample = document.getElementById("sample").value;
-    console.log("Sample Text Entered - " + sample);
-    console.log("Persisting Data in electron-settings");
-    await window.settings.setSampleData(sample);
-  });
-
-  window.settings.getSampleData().then((value) => {
-    console.log("Persisted Value - " + value);
-    document.getElementById("sample").value = value || "";
-  });
 });

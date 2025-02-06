@@ -2,7 +2,6 @@ const { app, BrowserWindow, ipcMain, nativeTheme } = require("electron");
 const path = require("node:path");
 const settings = require("electron-settings");
 const Parser = require("rss-parser");
-const { electron } = require("node:process");
 const parser = new Parser();
 
 require('electron-reload')(__dirname, { electron: path.join(__dirname, 'node_modules', '.bin', 'electron')});
@@ -63,14 +62,6 @@ const createWindow = () => {
     feeds = feeds.filter((feed) => feed.url !== url);
     await settings.set("feeds", feeds);
     return feeds;
-  });
-
-  ipcMain.handle("get-sample-data", async () => {
-    return settings.get("key.data");
-  });
-
-  ipcMain.handle("set-sample-data", async (event, data) => {
-    await settings.set("key", { data });
   });
 
   console.log("Settings file path:", settings.file());
