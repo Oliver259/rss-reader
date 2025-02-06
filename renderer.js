@@ -54,12 +54,26 @@ document.addEventListener("DOMContentLoaded", () => {
       feed.items.forEach((item) => {
         const itemElement = document.createElement("div");
         itemElement.className = "rss-item";
-        itemElement.innerHTML = `
-          <h3>${item.title}</h3>
-          <h4>${item.author || item.creator}<br>${item.pubDate}</h4>
-          <p>${item.content || item["content:encoded"]}</p>
-          <a href="${item.link}" target="_blank">Read more</a>
-        `;
+
+        // Define item.description with a default value if it is undefined
+        item.description = item.description || "";
+
+        // Construct the inner HTML for the item
+        let itemContent = `
+        <h3>${item.title}</h3>
+        <h4>${item.author || item.creator}<br>${item.pubDate}</h4>
+        <p>${item.content || item["content:encoded"] || item.description}</p>
+      `;
+
+        // Check if the description already contains a "Read more" link
+        if (
+          !item.description.includes("Read more") &&
+          !itemContent.includes("Read more")
+        ) {
+          itemContent += `<a href="${item.link}" target="_blank">Read more</a>`;
+        }
+
+        itemElement.innerHTML = itemContent;
         feedContainer.appendChild(itemElement);
       });
     } catch (error) {
@@ -78,15 +92,21 @@ document.addEventListener("DOMContentLoaded", () => {
     feeds.forEach((feed) => {
       const feedItem = document.createElement("div");
       feedItem.className =
-        "rss-item saved-feed-card-bg dark:bg-gray-800 p-4 py-2 rounded-lg shadow-md mb-4 flex flex-col justify-center items-center";
+        "rss-item saved-feed-card-bg dark:bg-gray-800 py-2 rounded-lg shadow-md mb-4 flex flex-col justify-center items-center";
       feedItem.innerHTML = `
       <h3 class="text-xl font-bold" text-center>${feed.title}</h3>
-      <div class="flex justify-between mb-4">
+      <div class="flex justify-between">
         <button class="view-button mr-2 px-4 py-2 saved-feed-card-view-button saved-feed-card-button-text rounded hover:bg-blue-700" data-url="${feed.url}">View</button>
         <button class="remove-button px-4 py-2 saved-feed-card-remove-button saved-feed-card-button-text rounded hover:bg-red-700" data-url="${feed.url}">Remove</button>
       </div>
     `;
       feedList.appendChild(feedItem);
+
+      // Remove mb-4 class from the last feed item to make padding more uniform
+      const lastFeedItem = feedList.lastElementChild;
+      if (lastFeedItem) {
+        lastFeedItem.classList.remove("mb-4");
+      }
     });
 
     // Loads the relevant rss feed when view button is clicked
