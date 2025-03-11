@@ -1338,5 +1338,145 @@ video {
 .saved-feed-card-remove-button {
   background-color: rgb(var(--latte-ctp-red));
 }
+}
 
+/* Notification Styles */
+#notification {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  border-left-width: 4px;
+  max-width: 28rem;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  z-index: 50;
+}
+
+#notification.opacity-100 {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#notification.hidden {
+  display: none;
+}
+
+#notification-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 99px;
+  margin-right: 0.75rem;
+}
+
+#notification-title {
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+#notification-message {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+#close-notification {
+  margin-left: auto;
+  cursor: pointer;
+}
+
+
+/* Dark mode notification styles */
+@media (prefers-color-scheme: dark) {
+  .success-notification {
+    background-color: rgba(var(--mocha-ctp-surface0));
+    color: rgb(var(--mocha-ctp-green));
+    border-color: rgb(var(--mocha-ctp-green));
+  }
+  
+  .success-notification #notification-icon {
+    background-color: rgba(var(--mocha-ctp-surface1));
+    color: rgb(var(--mocha-ctp-green));
+  }
+  
+  .error-notification {
+    background-color: rgba(var(--mocha-ctp-surface0));
+    color: rgb(var(--mocha-ctp-red));
+    border-color: rgb(var(--mocha-ctp-red));
+  }
+  
+  .error-notification #notification-icon {
+    background-color: rgba(var(--mocha-ctp-surface1));
+    color: rgb(var(--mocha-ctp-red));
+  }
+  
+  .info-notification {
+    background-color: rgba(var(--mocha-ctp-surface0));
+    color: rgb(var(--mocha-ctp-blue));
+    border-color: rgb(var(--mocha-ctp-blue));
+  }
+  
+  .info-notification #notification-icon {
+    background-color: rgba(var(--mocha-ctp-surface1));
+    color: rgb(var(--mocha-ctp-blue));
+  }
+  
+  #close-notification {
+    color: rgb(var(--mocha-ctp-overlay0));
+  }
+  
+  #close-notification:hover {
+    color: rgb(var(--mocha-ctp-text));
+  }
+}
+
+/* Light mode notification styles */
+@media (prefers-color-scheme: light) {
+  .success-notification {
+    background-color: rgb(240, 253, 244);
+    color: rgb(22, 101, 52);
+    border-color: rgb(34, 197, 94);
+  }
+  
+  .success-notification #notification-icon {
+    background-color: rgb(220, 252, 231);
+    color: rgb(34, 197, 94);
+  }
+  
+  .error-notification {
+    background-color: rgb(254, 242, 242);
+    color: rgb(153, 27, 27);
+    border-color: rgb(239, 68, 68);
+  }
+  
+  .error-notification #notification-icon {
+    background-color: rgb(254, 226, 226);
+    color: rgb(239, 68, 68);
+  }
+  
+  .info-notification {
+    background-color: rgb(239, 246, 255);
+    color: rgb(30, 64, 175);
+    border-color: rgb(59, 130, 246);
+  }
+  
+  .info-notification #notification-icon {
+    background-color: rgb(219, 234, 254);
+    color: rgb(59, 130, 246);
+  }
+  
+  #close-notification {
+    color: rgb(156, 163, 175);
+  }
+  
+  #close-notification:hover {
+    color: rgb(17, 24, 39);
+  }
 }
