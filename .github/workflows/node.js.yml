@@ -28,4 +28,4 @@ jobs:
       uses: actions/upload-artifact@v4.6.2
       with:
         name: Ubuntu Build
-        path: "/home/runner/work/rss-reader/rss-reader/out/make/*.deb"
+        path: "/home/runner/work/rss-reader/rss-reader/out/make/deb/x64/*.deb"
