@@ -53,6 +53,23 @@ function hideNotification() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // Add event listener for importing opml files
+  document.getElementById("import-opml").addEventListener("click", async () => {
+    try {
+      const feeds = await window.opmlHandler.importFeeds();
+      showNotification(
+        "success",
+        "Import Successful",
+        "Feeds imported successfully.",
+      );
+      renderFeedList(); // Re-render the feed list
+    } catch (error) {
+      showNotification("error", "Import Failed", error.message);
+    }
+  });
+
+
   // Add event listener for notification close button
   document
     .getElementById("close-notification")

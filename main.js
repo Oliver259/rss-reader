@@ -1,12 +1,14 @@
-const { app, BrowserWindow, ipcMain, nativeTheme } = require("electron");
+const { app, BrowserWindow, ipcMain, nativeTheme, dialog } = require("electron");
 const path = require("node:path");
 const settings = require("electron-settings");
 const Parser = require("rss-parser");
 const parser = new Parser();
+const fs = require("fs");
+const { parseStringPromise } = require("xml2js");
 
-// require("electron-reload")(__dirname, {
-//   electron: path.join(__dirname, "node_modules", ".bin", "electron"),
-// });
+require("electron-reload")(__dirname, {
+  electron: path.join(__dirname, "node_modules", ".bin", "electron"),
+});
 
 // Function to create the main application window
 const createWindow = () => {
@@ -71,6 +73,43 @@ const createWindow = () => {
     feeds = feeds.filter((feed) => feed.url !== url);
     await settings.set("feeds", feeds);
     return feeds;
+  });
+
+  ipcMain.handle("import-opml", async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      filters: [{ name: "OPML Files", extensions: ["opml"] }],
+      properties: ["openFile"],
+    });
+
+    if (canceled || filePaths.length === 0) return;
+
+    const filePath = filePaths[0];
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+
+    try {
+      const result = await parseStringPromise(fileContent);
+      const feeds = result.opml.body[0].outline.map((outline) => ({
+        title: outline.$.title || outline.$.text,
+        url: outline.$.xmlUrl,
+      }));
+
+      // Save feeds to settings
+      let existingFeeds = await settings.get("feeds", []);
+      existingFeeds = Array.isArray(existingFeeds) ? existingFeeds : [];
+      const mergedFeeds = [
+        ...existingFeeds,
+        ...feeds.filter(
+          (feed) =>
+            !existingFeeds.some((existing) => existing.url === feed.url),
+        ),
+      ];
+      await settings.set("feeds", mergedFeeds);
+
+      return mergedFeeds;
+    } catch (error) {
+      console.error("Error importing OPML:", error);
+      throw new Error("Failed to import OPML file.");
+    }
   });
 };
 

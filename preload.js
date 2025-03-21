@@ -17,3 +17,9 @@ contextBridge.exposeInMainWorld("feedStore", {
   addFeed: (url, title) => ipcRenderer.invoke("add-feed", url, title),
   removeFeed: (url) => ipcRenderer.invoke("remove-feed", url),
 });
+
+
+// Expose opml handler to the renderer process
+contextBridge.exposeInMainWorld("opmlHandler", {
+  importFeeds: async () => ipcRenderer.invoke("import-opml"),
+});
