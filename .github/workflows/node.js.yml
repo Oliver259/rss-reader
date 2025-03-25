@@ -20,7 +20,7 @@ jobs:
             include:
                 - os: macos-latest
                   platform: mac
-                  artifact_path: "out/make/*.zip"
+                  artifact_path: "out/make/**/.zip"
                 - os: ubuntu-latest
                   platform: linux
                   artifact_path: |
@@ -29,8 +29,8 @@ jobs:
                 - os: windows-latest
                   platform: windows
                   artifact_path: |
-                    "out/make/squirrel.windows/x64/*.exe"
-                    "out/make/*.zip"
+                    "out/make/**/.exe"
+                    "out/make/**/.zip"
     
     steps:
     - uses: actions/checkout@v4
