@@ -284,13 +284,17 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".remove-button").forEach((button) => {
       button.addEventListener("click", async (event) => {
         const url = event.target.getAttribute("data-url");
+        // Find the feed title from the parent card before removing
+        const feedCard = event.target.closest(".rss-item");
+        const feedTitle = feedCard.querySelector("h3").textContent;
+
         try {
           await window.feedStore.removeFeed(url);
           renderFeedList();
           showNotification(
             "info",
             "Feed Removed",
-            "Feed has been removed from your list",
+            `"${feedTitle}" has been removed from your list`,
           );
         } catch (error) {
           showNotification(
@@ -328,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showNotification(
           "success",
           "Feed Added",
-          `Successfully added "${title}" ${folder || "Default"} to your feeds`,
+          `Successfully added "${title}" to ${folder || "Default"}`,
         );
       } catch (error) {
         showNotification(
