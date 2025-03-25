@@ -130,6 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchRSSButton.addEventListener("click", async () => {
     const url = rssURLInput.value;
     await fetchAndDisplayRSS(url);
+    
+    document.getElementById("rss-display").classList.remove("hidden");
   });
 
   // Function to fetch and display RSS feeds
