@@ -1487,3 +1487,11 @@ video {
   border-bottom: 2px solid rgb(var(--mocha-ctp-surface2));
   margin-bottom: 1rem;
 }
+
+/* Make even columns appear below odd columns */
+.folder-container .feed-grid > div:nth-child(even) {
+  margin-top: 2rem;
+}
+.folder-container .feed-grid > div:nth-child(odd) {
+  margin-bottom: 2rem;
+}

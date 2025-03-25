@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Create grid container for feeds
     const feedsGrid = document.createElement("div");
-    feedsGrid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
+    feedsGrid.className = "feed-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
 
     // Create and append each feed in the folder
     folderFeeds.forEach((feed) => {
