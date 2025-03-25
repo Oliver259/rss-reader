@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const rssURLInput = document.getElementById("rss-url");
   const rssTitleInput = document.getElementById("rss-title");
+  const rssFolderInput = document.getElementById("rss-folder");
   const addFeedButton = document.getElementById("add-feed");
   const fetchRSSButton = document.getElementById("fetch-rss");
 
@@ -304,6 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("add-feed").addEventListener("click", async () => {
     const url = rssURLInput.value.trim();
     const title = rssTitleInput.value.trim();
+    const folder = rssFolderInput.value.trim();
 
     if (url && title) {
       if (!url.startsWith("http://") && !url.startsWith("https://")) {
@@ -315,15 +317,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       try {
-        await window.feedStore.addFeed(url, title);
+        await window.feedStore.addFeed(url, title, folder);
         renderFeedList();
         rssURLInput.value = "";
         rssTitleInput.value = "";
+        rssFolderInput.value = "";
         toggleAddFeedButtonState();
         showNotification(
           "success",
           "Feed Added",
-          `Successfully added "${title}" to your feeds`,
+          `Successfully added "${title}" ${folder || "Default"} to your feeds`,
         );
       } catch (error) {
         showNotification(

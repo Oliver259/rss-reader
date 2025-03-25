@@ -55,10 +55,10 @@ const createWindow = () => {
   });
 
   // Handle adding a new feed
-  ipcMain.handle("add-feed", async (event, url, title) => {
+  ipcMain.handle("add-feed", async (event, url, title, folder) => {
     let feeds = await settings.get("feeds", []);
     feeds = Array.isArray(feeds) ? feeds : [];
-    const feedData = { url, title };
+    const feedData = { url, title, folder: folder || "Default" };
     if (!feeds.some((feed) => feed.url === url)) {
       feeds.push(feedData);
       await settings.set("feeds", feeds);

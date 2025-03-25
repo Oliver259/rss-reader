@@ -14,7 +14,7 @@ contextBridge.exposeInMainWorld("rssParser", {
 // Expose store functions to the renderer process
 contextBridge.exposeInMainWorld("feedStore", {
   getFeeds: () => ipcRenderer.invoke("get-feeds"),
-  addFeed: (url, title) => ipcRenderer.invoke("add-feed", url, title),
+  addFeed: (url, title, folder) => ipcRenderer.invoke("add-feed", url, title, folder),
   removeFeed: (url) => ipcRenderer.invoke("remove-feed", url),
 });
 
