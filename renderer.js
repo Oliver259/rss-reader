@@ -57,11 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add event listener for importing opml files
   document.getElementById("import-opml").addEventListener("click", async () => {
     try {
-      const feeds = await window.opmlHandler.importFeeds();
+      const result = await window.opmlHandler.importFeeds();
       showNotification(
         "success",
         "Import Successful",
-        "Feeds imported successfully.",
+        `Successfully imported ${result.stats.added} new feeds. ` +
+          `${result.stats.skipped} existing feeds were skipped.`,
       );
       renderFeedList(); // Re-render the feed list
     } catch (error) {
@@ -217,29 +218,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to render the list of saved feeds
   async function renderFeedList() {
-    const feeds = await window.feedStore.getFeeds();
-    feedList.innerHTML = ""; // Clear the feed list
+  const feeds = await window.feedStore.getFeeds();
+  feedList.innerHTML = "";
 
-    // Create and append each item to the feed list
-    feeds.forEach((feed) => {
+  // Group feeds by folder
+  const feedsByFolder = feeds.reduce((acc, feed) => {
+    const folder = feed.folder || "Uncategorized";
+    if (!acc[folder]) {
+      acc[folder] = [];
+    }
+    acc[folder].push(feed);
+    return acc;
+  }, {});
+
+  // Create and append each folder and its feeds
+  Object.entries(feedsByFolder).forEach(([folder, folderFeeds]) => {
+    const folderContainer = document.createElement("div");
+    folderContainer.className = "folder-container";
+
+    // Create folder header if not Uncategorized
+    if (folder !== "Uncategorized") {
+      const folderHeader = document.createElement("h2");
+      folderHeader.className = "folder-header text-2xl font-bold mb-4";
+      folderHeader.textContent = folder;
+      folderContainer.appendChild(folderHeader);
+    }
+
+    // Create grid container for feeds
+    const feedsGrid = document.createElement("div");
+    feedsGrid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
+
+    // Create and append each feed in the folder
+    folderFeeds.forEach((feed) => {
       const feedItem = document.createElement("div");
       feedItem.className =
         "rss-item saved-feed-card-bg dark:bg-gray-800 py-2 rounded-lg shadow-md mb-4 flex flex-col justify-center items-center";
       feedItem.innerHTML = `
-      <h3 class="text-xl font-bold" text-center>${feed.title}</h3>
+      <h3 class="text-xl font-bold text-center">${feed.title}</h3>
       <div class="flex justify-between">
         <button class="view-button mr-2 px-4 py-2 saved-feed-card-view-button saved-feed-card-button-text rounded hover:bg-blue-700" data-url="${feed.url}">View</button>
         <button class="remove-button px-4 py-2 saved-feed-card-remove-button saved-feed-card-button-text rounded hover:bg-red-700" data-url="${feed.url}">Remove</button>
       </div>
     `;
-      feedList.appendChild(feedItem);
 
-      // Remove mb-4 class from the last feed item to make padding more uniform
-      const lastFeedItem = feedList.lastElementChild;
-      if (lastFeedItem) {
-        lastFeedItem.classList.remove("mb-4");
-      }
+      feedsGrid.appendChild(feedItem);
     });
+
+    folderContainer.appendChild(feedsGrid);
+    feedList.appendChild(folderContainer);
+  });
 
     // Loads the relevant rss feed when view button is clicked
     document.querySelectorAll(".view-button").forEach((button) => {

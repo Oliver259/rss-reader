@@ -76,42 +76,95 @@ const createWindow = () => {
   });
 
   ipcMain.handle("import-opml", async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
-      filters: [{ name: "OPML Files", extensions: ["opml"] }],
-      properties: ["openFile"],
-    });
-
-    if (canceled || filePaths.length === 0) return;
-
-    const filePath = filePaths[0];
-    const fileContent = fs.readFileSync(filePath, "utf-8");
-
-    try {
-      const result = await parseStringPromise(fileContent);
-      const feeds = result.opml.body[0].outline.map((outline) => ({
-        title: outline.$.title || outline.$.text,
-        url: outline.$.xmlUrl,
-      }));
-
-      // Save feeds to settings
-      let existingFeeds = await settings.get("feeds", []);
-      existingFeeds = Array.isArray(existingFeeds) ? existingFeeds : [];
-      const mergedFeeds = [
-        ...existingFeeds,
-        ...feeds.filter(
-          (feed) =>
-            !existingFeeds.some((existing) => existing.url === feed.url),
-        ),
-      ];
-      await settings.set("feeds", mergedFeeds);
-
-      return mergedFeeds;
-    } catch (error) {
-      console.error("Error importing OPML:", error);
-      throw new Error("Failed to import OPML file.");
-    }
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    filters: [{ name: "OPML Files", extensions: ["opml"] }],
+    properties: ["openFile"],
   });
-};
+
+  if (canceled || filePaths.length === 0) return;
+
+  const filePath = filePaths[0];
+  const fileContent = fs.readFileSync(filePath, "utf-8");
+
+  try {
+    const result = await parseStringPromise(fileContent);
+    const feeds = [];
+
+    // Recursive function to process outline elements
+    const processOutline = (outline) => {
+      // Skip if this is a folder (no xmlUrl)
+      if (!outline.$.xmlUrl) {
+        // If this outline has children, process them
+        if (outline.outline) {
+          outline.outline.forEach(processOutline);
+        }
+        return;
+      }
+
+      // Validate URL
+      try {
+        const url = new URL(outline.$.xmlUrl);
+        if (!['http:', 'https:'].includes(url.protocol)) {
+          console.warn(`Skipping feed with invalid protocol: ${outline.$.xmlUrl}`);
+          return;
+        }
+
+        feeds.push({
+          title: outline.$.title || outline.$.text,
+          url: outline.$.xmlUrl,
+          folder: outline.$.folder || null // Store folder information if needed
+        });
+      } catch (error) {
+        console.warn(`Skipping invalid URL: ${outline.$.xmlUrl}`);
+        return;
+      }
+    };
+
+    // Process all outlines in the OPML body
+    if (result.opml.body?.[0]?.outline) {
+      result.opml.body[0].outline.forEach((outline) => {
+        if (outline.outline) {
+          // This is a folder
+          const folderName = outline.$.title || outline.$.text;
+          outline.outline.forEach((subOutline) => {
+            // Add folder information to the outline
+            subOutline.$.folder = folderName;
+            processOutline(subOutline);
+          });
+        } else {
+          processOutline(outline);
+        }
+      });
+    }
+
+    // Save feeds to settings
+    let existingFeeds = await settings.get("feeds", []);
+    existingFeeds = Array.isArray(existingFeeds) ? existingFeeds : [];
+    
+    // Merge feeds, checking for duplicates
+    const mergedFeeds = [
+      ...existingFeeds,
+      ...feeds.filter(
+        (feed) => !existingFeeds.some((existing) => existing.url === feed.url)
+      ),
+    ];
+
+    await settings.set("feeds", mergedFeeds);
+
+    // Return statistics about the import
+    return {
+      feeds: mergedFeeds,
+      stats: {
+        total: feeds.length,
+        added: feeds.length - existingFeeds.length,
+        skipped: existingFeeds.length,
+      }
+    };
+  } catch (error) {
+    console.error("Error importing OPML:", error);
+    throw new Error("Failed to import OPML file.");
+  }
+})};
 
 // Create the main window when the app is ready
 app.whenReady().then(() => {

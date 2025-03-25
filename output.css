@@ -1480,3 +1480,10 @@ video {
     color: rgb(17, 24, 39);
   }
 }
+
+
+/* Folder styling */
+.folder-header {
+  border-bottom: 2px solid rgb(var(--mocha-ctp-surface2));
+  margin-bottom: 1rem;
+}
