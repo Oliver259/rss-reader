@@ -1294,8 +1294,17 @@ video {
   body { background: rgb(var(--mocha-ctp-base)); color: rgb(var(--mocha-ctp-text)); }
   a:link { color: rgb(var(--mocha-ctp-blue)); }
   input[type="text"] {
-    color: #4c4f69; /* Dark color for text inside input fields */
-    background-color: #eff1f5; /* Ensure the background is white */
+    color: rgb(var(--mocha-ctp-text)); /* Dark color for text inside input fields */
+    background-color: rgb(var(--mocha-ctp-surface0)); /* Ensure the background is white */
+  }
+
+/* Mimic default text focus as list attribute removes it */
+input[type="text"]:focus {
+    border-color: #e59700;
+    border-width: 2px;
+    box-shadow: 0 0 0 2px rgb(var(--mocha-ctp-surface0)),
+                0 0 0 3px #e5e7eb;
+    outline: none;
   }
 
 .saved-feed-card-bg {
@@ -1319,8 +1328,14 @@ video {
   body { background: rgb(var(--latte-ctp-base)); color: rgb(var(--latte-ctp-text)); }
   a:link {color: rgb(var(--latte-ctp-blue));}
   input[type="text"] {
-    color: #4c4f69; /* Dark color for text inside input fields */
-    background-color: #ffffff; /* Ensure the background is white */
+    background-color: rgb(var(--latte-ctp-mantle)); /* Ensure the background is white */
+    color:rgb(var(--latte-ctp-text)); /* Dark color for text inside input fields */
+  }
+
+  /* Mimic default text focus as list attribute removes it */
+  input[type="text"]:focus {
+    border-color: #e59700;
+    border-width: 2px;
   }
 
 .saved-feed-card-bg {
@@ -1494,4 +1509,46 @@ video {
 }
 .folder-container .feed-grid > div:nth-child(odd) {
   margin-bottom: 2rem;
+}
+
+/* Input and datalist styling */
+input[list],
+input[list]:focus,
+input[list]:active,
+input[list]:focus-visible {
+  background-color: rgb(var(--mocha-ctp-surface0));
+  color: rgb(var(--mocha-ctp-text));
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Light mode overrides */
+@media (prefers-color-scheme: light) {
+  input[list],
+  input[list]:focus,
+  input[list]:active,
+  input[list]:focus-visible {
+    background-color: rgb(var(--latte-ctp-mantle));
+    color: rgb(var(--latte-ctp-text));
+  }
+}
+
+/* Override autocomplete styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px rgb(var(--mocha-ctp-surface0)) inset !important;
+  -webkit-text-fill-color: rgb(var(--mocha-ctp-text)) !important;
+}
+
+@media (prefers-color-scheme: light) {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(var(--latte-ctp-mantle)) inset !important;
+    -webkit-text-fill-color: rgb(var(--latte-ctp-text)) !important;
+  }
 }
