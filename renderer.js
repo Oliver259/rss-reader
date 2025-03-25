@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Group feeds by folder
   const feedsByFolder = feeds.reduce((acc, feed) => {
-    const folder = feed.folder || "Uncategorized";
+    const folder = feed.folder || "Default";
     if (!acc[folder]) {
       acc[folder] = [];
     }
@@ -238,14 +238,12 @@ document.addEventListener("DOMContentLoaded", () => {
   Object.entries(feedsByFolder).forEach(([folder, folderFeeds]) => {
     const folderContainer = document.createElement("div");
     folderContainer.className = "folder-container";
-
-    // Create folder header if not Uncategorized
-    if (folder !== "Uncategorized") {
-      const folderHeader = document.createElement("h2");
-      folderHeader.className = "folder-header text-2xl font-bold mb-4";
-      folderHeader.textContent = folder;
-      folderContainer.appendChild(folderHeader);
-    }
+    
+    // Create folder header
+    const folderHeader = document.createElement("h2");
+    folderHeader.className = "folder-header text-2xl font-bold mb-4";
+    folderHeader.textContent = folder;
+    folderContainer.appendChild(folderHeader);
 
     // Create grid container for feeds
     const feedsGrid = document.createElement("div");
@@ -291,6 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           await window.feedStore.removeFeed(url);
           renderFeedList();
+          updateFolderList();
           showNotification(
             "info",
             "Feed Removed",
@@ -306,6 +305,32 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+async function updateFolderList() {
+  const feeds = await window.feedStore.getFeeds();
+  const folderList = document.getElementById("folder-list");
+
+  // Add default "Default" option
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "Default";
+  folderList.appendChild(defaultOption);
+
+  // Get unique folders
+  const folders = [
+    ...new Set(
+      feeds
+        .map((feed) => feed.folder)
+        .filter((folder) => folder && folder !== "Default"),
+    ),
+  ];
+
+  // Add folder options
+  folders.forEach((folder) => {
+    const option = document.createElement("option");
+    option.value = folder;
+    folderList.appendChild(option);
+  });
+}
 
   // Adds the entered rss feed and title to saved feeds list
   document.getElementById("add-feed").addEventListener("click", async () => {
@@ -325,6 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         await window.feedStore.addFeed(url, title, folder);
         renderFeedList();
+        updateFolderList();
         rssURLInput.value = "";
         rssTitleInput.value = "";
         rssFolderInput.value = "";
@@ -346,4 +372,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial render of the feed list
   renderFeedList();
+  updateFolderList();
 });
