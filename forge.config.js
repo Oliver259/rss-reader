@@ -11,10 +11,10 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       config: {},
     },
-    {
-      name: '@electron-forge/maker-zip',
-      platforms: ['darwin', 'win64', 'win32'],
-    },
+    // {
+    //   name: '@electron-forge/maker-zip',
+    //   platforms: ['darwin', 'win64', 'win32'],
+    // },
     {
       name: '@electron-forge/maker-deb',
       config: {},
